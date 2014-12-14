@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <script src="jquery-2.1.1.min.js"> </script>
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <form>
+            <input type="text" id="name" placeholder="Name"></input>
+			<br/>
+            <input type="text" id="input" placeholder="Message"></input>
+            <input type="button" value="Send" id="sendButton"></input>
+        </form>
+
+        <div id="responseField">
+            
+        </div>
+
+        <img src="http://40.media.tumblr.com/5d9e12d838db5fdc02d0c014e162b0c0/tumblr_myozr5cnct1sdk4s6o1_1280.jpg"/>
+        <script>
+            $(document).ready(function()
+            {						
+				var socket = new io();
+				var div = document.createElement("div");
+				
+                document.querySelector("#sendButton").addEventListener("click", function()
+				{
+					
+					var input = $("#input").val();
+					var name = $("#name").val();
+					
+					socket.emit("message", {"message":input, "name":name});
+					
+                });
+				
+				document.querySelector("#responseField").appendChild(div);
+				
+				socket.on("eventmessage",function(data)
+				{
+					var m = document.createElement("div");
+					m.innerHTML = data.message;
+					m.style.color = data.color;
+					div.appendChild(m);
+				});
+
+				socket.on("message", function(data)
+				{
+					var m = document.createElement("div");
+					m.innerHTML = data.name + ": " + data.message;
+					div.appendChild(m);
+				});				
+            });
+        </script>
+    </body>
+</html>
+
